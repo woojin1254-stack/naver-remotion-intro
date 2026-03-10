@@ -6,3 +6,8 @@ dist
 # Ignore the output video from Git but not videos you import into src/.
 out
 build
+*.mp4
+shorts_project
+youtube-shorts-skill
+player-preview.png
+shorts-player-preview.png

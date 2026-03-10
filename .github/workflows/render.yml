@@ -13,10 +13,21 @@ jobs:
         with:
           node-version: 20
       - run: npm install
-      - name: Render Video
-        run: npx remotion render src/index.ts NaverIntro out.mp4
-      - name: Upload Artifact
+
+      - name: Render NaverIntro
+        run: npx remotion render src/index.ts NaverIntro naver-intro.mp4
+
+      - name: Render AI/DevOps Shorts
+        run: npx remotion render src/index.ts AIDevOpsShorts ai-devops-shorts.mp4
+
+      - name: Upload NaverIntro
         uses: actions/upload-artifact@v4
         with:
-          name: video
-          path: out.mp4
+          name: naver-intro-video
+          path: naver-intro.mp4
+
+      - name: Upload Shorts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-devops-shorts
+          path: ai-devops-shorts.mp4
