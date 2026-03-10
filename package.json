@@ -17,16 +17,23 @@
   },
   "devDependencies": {
     "@remotion/eslint-config-flat": "4.0.434",
+    "@remotion/player": "^4.0.434",
+    "@tailwindcss/vite": "^4.2.1",
     "@types/react": "19.2.7",
+    "@types/react-dom": "^19.2.3",
     "@types/web": "0.0.166",
+    "@vitejs/plugin-react": "^5.1.4",
     "eslint": "9.19.0",
     "prettier": "3.8.1",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vite": "^7.3.1"
   },
   "scripts": {
-    "dev": "remotion studio",
+    "dev": "vite",
+    "dev:studio": "remotion studio",
     "generate-audio": "node scripts/generate-audio.js",
-    "build": "remotion bundle",
+    "build": "vite build",
+    "build:remotion": "remotion bundle",
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc"
   },
