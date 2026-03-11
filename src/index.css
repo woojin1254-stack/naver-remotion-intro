@@ -5,6 +5,14 @@
   --naver-white: #FFFFFF;
   --naver-black: #000000;
   --naver-gray: #F5F6F7;
+
+  /* Daily Mood palette */
+  --mood-lavender: #9b87f5;
+  --mood-purple: #7c5cbf;
+  --mood-rose: #f5a5c8;
+  --mood-peach: #f5c49a;
+  --mood-lilac: #c4a8e8;
+  --mood-deep: #1a1035;
 }
 
 * {

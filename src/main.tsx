@@ -1,76 +1,164 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { createRoot } from "react-dom/client";
 import { Player } from "@remotion/player";
 import { MyComposition } from "./Composition";
 import { ShortsComposition } from "./scenes/ShortsVideo";
+import { DailyMoodIntro } from "./scenes/DailyMood/DailyMoodIntro";
 import "./index.css";
 
-type VideoType = "naver" | "shorts";
+type VideoType = "dailymood" | "naver" | "shorts";
 
-const videos: Record<VideoType, { label: string; component: React.FC; frames: number }> = {
-    naver: { label: "🟢 네이버 인트로", component: MyComposition, frames: 1200 },
-    shorts: { label: "🎬 AI/DevOps 숏츠", component: ShortsComposition, frames: 1140 },
+interface VideoInfo {
+    label: string;
+    component: React.FC;
+    frames: number;
+    accent: string;
+    accentGlow: string;
+}
+
+const videos: Record<VideoType, VideoInfo> = {
+    dailymood: {
+        label: "🌸 데일리 무드",
+        component: DailyMoodIntro,
+        frames: 600,
+        accent: "#9b87f5",
+        accentGlow: "rgba(155,135,245,0.3)",
+    },
+    naver: {
+        label: "🟢 네이버 인트로",
+        component: MyComposition,
+        frames: 847,
+        accent: "#03C75A",
+        accentGlow: "rgba(3,199,90,0.3)",
+    },
+    shorts: {
+        label: "🎬 AI/DevOps 숏츠",
+        component: ShortsComposition,
+        frames: 1010,
+        accent: "#00c9ff",
+        accentGlow: "rgba(0,200,255,0.3)",
+    },
 };
 
 const App = () => {
-    const [active, setActive] = useState<VideoType>("shorts");
-    const current = videos[active];
+    const [active, setActive] = useState<VideoType>("dailymood");
+    const current = useMemo(() => videos[active], [active]);
+
+    const handleSelect = useCallback((key: VideoType) => {
+        setActive(key);
+    }, []);
 
     return (
         <div
             style={{
                 width: "100%",
-                height: "100vh",
-                backgroundColor: "#0a0a0a",
+                minHeight: "100vh",
+                backgroundColor: "#08060f",
+                background:
+                    "radial-gradient(ellipse at 50% 0%, #1a1035 0%, #08060f 60%)",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
+                padding: "20px 16px",
+                fontFamily: "'Noto Sans KR', sans-serif",
                 overflow: "hidden",
+                position: "relative",
             }}
         >
-            {/* 상단 토글 */}
+            {/* Ambient glow behind player */}
             <div
                 style={{
-                    display: "flex",
-                    gap: "12px",
-                    marginBottom: "16px",
-                    zIndex: 10,
+                    position: "absolute",
+                    width: 500,
+                    height: 500,
+                    borderRadius: "50%",
+                    background: `radial-gradient(circle, ${current.accentGlow}, transparent 70%)`,
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    pointerEvents: "none",
+                    opacity: 0.5,
+                }}
+            />
+
+            {/* Header */}
+            <h1
+                id="app-title"
+                style={{
+                    fontSize: "18px",
+                    fontWeight: 800,
+                    color: "#ffffff",
+                    letterSpacing: -0.5,
+                    marginBottom: 8,
+                    opacity: 0.9,
                 }}
             >
-                {(Object.keys(videos) as VideoType[]).map((key) => (
-                    <button
-                        key={key}
-                        onClick={() => setActive(key)}
-                        style={{
-                            padding: "10px 24px",
-                            borderRadius: "50px",
-                            border: active === key ? "2px solid #00c9ff" : "2px solid #333",
-                            background: active === key
-                                ? "linear-gradient(135deg, #00c9ff22, #92fe9d22)"
-                                : "#1a1a1a",
-                            color: active === key ? "#00c9ff" : "#888",
-                            fontFamily: "'Noto Sans KR', sans-serif",
-                            fontWeight: 700,
-                            fontSize: "14px",
-                            cursor: "pointer",
-                            transition: "all 0.3s ease",
-                        }}
-                    >
-                        {videos[key].label}
-                    </button>
-                ))}
+                Remotion Player
+            </h1>
+
+            {/* Toggle Buttons */}
+            <div
+                id="video-selector"
+                style={{
+                    display: "flex",
+                    gap: "10px",
+                    marginBottom: "20px",
+                    zIndex: 10,
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                }}
+            >
+                {(Object.keys(videos) as VideoType[]).map((key) => {
+                    const isActive = active === key;
+                    const vid = videos[key];
+                    return (
+                        <button
+                            key={key}
+                            id={`btn-${key}`}
+                            onClick={() => handleSelect(key)}
+                            style={{
+                                padding: "10px 22px",
+                                borderRadius: "50px",
+                                border: isActive
+                                    ? `2px solid ${vid.accent}`
+                                    : "2px solid rgba(255,255,255,0.08)",
+                                background: isActive
+                                    ? `linear-gradient(135deg, ${vid.accent}18, ${vid.accent}08)`
+                                    : "rgba(255,255,255,0.04)",
+                                backdropFilter: "blur(12px)",
+                                color: isActive ? vid.accent : "#666",
+                                fontFamily: "'Noto Sans KR', sans-serif",
+                                fontWeight: 700,
+                                fontSize: "13px",
+                                cursor: "pointer",
+                                letterSpacing: 0.3,
+                                boxShadow: isActive
+                                    ? `0 4px 20px ${vid.accent}20`
+                                    : "none",
+                            }}
+                        >
+                            {vid.label}
+                        </button>
+                    );
+                })}
             </div>
 
-            {/* 플레이어 */}
+            {/* Player Container */}
             <div
+                id="player-container"
                 style={{
                     width: "100%",
-                    maxWidth: "400px",
-                    height: "calc(100vh - 80px)",
-                    borderRadius: "20px",
+                    maxWidth: "380px",
+                    height: "calc(100vh - 140px)",
+                    maxHeight: "680px",
+                    borderRadius: "24px",
                     overflow: "hidden",
-                    boxShadow: "0 0 60px rgba(0,200,255,0.15)",
+                    boxShadow: `0 0 80px ${current.accentGlow}, 
+                                0 20px 60px rgba(0,0,0,0.5),
+                                inset 0 0 0 1px rgba(255,255,255,0.06)`,
+                    position: "relative",
+                    zIndex: 2,
                 }}
             >
                 <Player
@@ -89,6 +177,19 @@ const App = () => {
                     controls
                 />
             </div>
+
+            {/* Footer */}
+            <p
+                style={{
+                    marginTop: 16,
+                    fontSize: "11px",
+                    color: "rgba(255,255,255,0.2)",
+                    letterSpacing: 2,
+                    zIndex: 2,
+                }}
+            >
+                POWERED BY REMOTION
+            </p>
         </div>
     );
 };

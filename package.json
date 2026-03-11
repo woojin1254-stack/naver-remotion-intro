@@ -11,6 +11,7 @@
     "@remotion/tailwind-v4": "4.0.434",
     "axios": "^1.13.6",
     "google-tts-api": "^2.0.2",
+    "msedge-tts": "^2.0.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "remotion": "4.0.434",
@@ -31,7 +32,7 @@
   "scripts": {
     "dev": "vite",
     "dev:studio": "remotion studio",
-    "generate-audio": "node scripts/generate-audio.js",
+    "generate-audio": "node scripts/generate-female-audio.js",
     "generate-shorts-audio": "node scripts/generate-shorts-audio.js",
     "build": "vite build",
     "build:remotion": "remotion bundle",

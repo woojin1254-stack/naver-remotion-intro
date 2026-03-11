@@ -14,11 +14,20 @@ jobs:
           node-version: 20
       - run: npm install
 
+      - name: Render DailyMoodIntro
+        run: npx remotion render src/index.ts DailyMoodIntro daily-mood-intro.mp4
+
       - name: Render NaverIntro
         run: npx remotion render src/index.ts NaverIntro naver-intro.mp4
 
       - name: Render AI/DevOps Shorts
         run: npx remotion render src/index.ts AIDevOpsShorts ai-devops-shorts.mp4
+
+      - name: Upload DailyMoodIntro
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-mood-intro-video
+          path: daily-mood-intro.mp4
 
       - name: Upload NaverIntro
         uses: actions/upload-artifact@v4
