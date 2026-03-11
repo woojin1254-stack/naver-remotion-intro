@@ -13,7 +13,7 @@ Config.setVideoImageFormat("png"); // Use PNG for higher quality frames during r
 Config.setOverwriteOutput(true);
 
 // Increase concurrency for faster rendering if system supports it
-Config.setConcurrency(8);
+Config.setConcurrency(4);
 
 Config.overrideWebpackConfig((config) => {
     return enableTailwind(config);
